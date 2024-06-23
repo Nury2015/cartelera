@@ -1,0 +1,125 @@
+.menu {
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover {
+        background-color: #111;
+    }
+}
+
+h1{
+    margin-left: 20px;
+    color: white
+}
+
+.nuestro {
+    font-size: larger;
+}
+
+
+
+.container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin: 20px;
+
+}
+
+body {
+    background-color: black;
+    margin: 20px;
+}
+
+
+img {
+    width: 200px;
+    height: 250px;
+    border: 10px solid transparent;
+}
+
+
+.carta {
+    width: 220px;
+    box-shadow: 0px 0px 10px #D1C6C5;
+    padding: 5px;
+    height: 450px;
+
+}
+
+.carta img:hover {
+    border: 0px solid transparent;
+    width: 220px;
+    height: 270px;
+    cursor: pointer;
+}
+
+.carta p {
+    margin-left: 10px;
+    color: white;
+}
+
+.carta h2 {
+    margin-left: 10px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    /* height:px; */
+    color: white;
+}
+
+.pie_pagina{
+    display: flex;
+    color: white;
+    flex-direction:row;
+    justify-content:space-evenly;
+}
+.footer ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.pie_pagina li {
+    float: left;
+}
+
+.pie_pagina a{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+
+.footer{
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    background-color: #070606;
+    color: #4f627b;
+}

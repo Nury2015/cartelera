@@ -1,4 +1,4 @@
-.menu {
+
 
     ul {
         list-style-type: none;
@@ -6,10 +6,8 @@
         padding: 0;
         overflow: hidden;
         background-color: #333;
-    }
+        display: flex;
 
-    li {
-        float: left;
     }
 
     li a {
@@ -23,9 +21,9 @@
     li a:hover {
         background-color: #111;
     }
-}
 
-h1{
+
+h1 {
     margin-left: 20px;
     color: white
 }
@@ -85,16 +83,16 @@ img {
     color: white;
 }
 
-.pie_pagina{
+.pie_pagina {
     display: flex;
     color: white;
-    flex-direction:row;
-    justify-content:space-evenly;
+    flex-direction: row;
+    justify-content: space-evenly;
     box-shadow: 0px 0px 10px #D1C6C5;
     list-style-type: none;
 }
 
-.footer ul{
+.footer ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -107,7 +105,7 @@ img {
 }
 
 
-.pie_pagina a{
+.pie_pagina a {
     display: block;
     color: white;
     text-align: center;
@@ -119,9 +117,22 @@ li a:hover {
     background-color: #111;
 }
 
-.footer{
+footer {
     padding-top: 3rem;
     padding-bottom: 3rem;
     background-color: #070606;
-    color: #4f627b;
-    
+    color: #4f627b;} 
+
+      
+      /* On screens that are 992px wide or less, the background color is blue */
+      @media screen and (max-width: 992px) {
+       
+      }
+      
+      /* On screens that are 600px wide or less, the background color is olive */
+      @media screen and (max-width: 600px) {
+       
+        ul{
+            flex-direction: column;
+        }
+    }

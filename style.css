@@ -693,78 +693,53 @@ section h1 {
     letter-spacing: 1px;
 }
 
-.fecha-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-}
-
-.fecha-tab {
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: #bbb;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.82rem;
-    transition: all 0.2s;
+/* Links a cadenas de cine */
+.cines-links {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    min-width: 80px;
-    text-transform: capitalize;
+    gap: 10px;
 }
 
-.fecha-tab.activo {
-    background: #D4AF37;
-    border-color: #D4AF37;
-    color: #000;
-    font-weight: bold;
-}
-
-.fecha-sub {
-    font-size: 0.72rem;
-    opacity: 0.8;
-}
-
-.sala {
-    margin-bottom: 16px;
-}
-
-.sala-titulo {
-    color: #666;
-    font-size: 0.78rem;
-    margin: 0 0 8px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-.horarios {
+.cine-link-btn {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.horario-btn {
+    justify-content: space-between;
+    align-items: center;
     background: #1a1a1a;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 8px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-decoration: none;
     transition: all 0.2s;
-    font-family: inherit;
 }
 
-.horario-btn:hover {
-    background: #D4AF37;
+.cine-link-btn:hover {
+    background: #222;
     border-color: #D4AF37;
-    color: #000;
+    transform: translateX(4px);
+}
+
+.cine-link-nombre {
+    color: #fff;
     font-weight: bold;
-    transform: scale(1.04);
+    font-size: 0.9rem;
+}
+
+.cine-link-sub {
+    color: #D4AF37;
+    font-size: 0.78rem;
+}
+
+.cine-link-google {
+    border-color: #1a2a3a;
+    margin-top: 4px;
+}
+
+.cine-link-google .cine-link-nombre {
+    color: #aaa;
+}
+
+.cine-link-google:hover {
+    border-color: #4a90d9;
 }
 
 /* === TOAST === */

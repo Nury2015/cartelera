@@ -482,16 +482,22 @@ function renderModal() {
                 <p class="modal-descripcion">${p.descripcion}</p>
 
                 <div class="horarios-section">
-                    <h3>Selecciona tu función</h3>
-                    <div class="fecha-tabs">
-                        ${fechas.map((f, i) => `
-                            <button class="fecha-tab ${i === fechaSeleccionada ? 'activo' : ''}"
-                                    onclick="cambiarFecha(${i})">
-                                ${i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : f.dia}
-                                <span class="fecha-sub">${f.fecha}</span>
-                            </button>`).join('')}
+                    <h3>Compra tus boletas</h3>
+                    <div class="cines-links">
+                        ${CINES.map(c => `
+                            <a class="cine-link-btn"
+                               href="${urlCine(c.id, p.titulo)}"
+                               target="_blank" rel="noopener">
+                                <span class="cine-link-nombre">${c.nombre}</span>
+                                <span class="cine-link-sub">Ver horarios y comprar →</span>
+                            </a>`).join('')}
+                        <a class="cine-link-btn cine-link-google"
+                           href="https://www.google.com/search?q=${encodeURIComponent(p.titulo + ' cine Colombia horarios')}"
+                           target="_blank" rel="noopener">
+                            <span class="cine-link-nombre">Buscar en Google</span>
+                            <span class="cine-link-sub">Todos los cines cerca de ti →</span>
+                        </a>
                     </div>
-                    ${horariosHTML}
                 </div>
             </div>
         </div>`;
@@ -567,6 +573,16 @@ function formatFecha(str) {
     const [y, m, d] = str.split('-');
     const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
     return `${parseInt(d)} ${meses[parseInt(m) - 1]} ${y}`;
+}
+
+function urlCine(cineId, titulo) {
+    const q = encodeURIComponent(titulo);
+    const urls = {
+        'cine-colombia': `https://www.cinecolombia.com/buscar?q=${q}`,
+        'cinemark':      `https://www.cinemark.com.co/peliculas`,
+        'cinepolis':     `https://www.cinepolis.com.co/pelicula/${q.toLowerCase().replace(/%20/g, '-')}`
+    };
+    return urls[cineId] || `https://www.google.com/search?q=${q}+horarios+cine+colombia`;
 }
 
 function abrirPolitica() {

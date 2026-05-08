@@ -342,10 +342,10 @@ section h1 {
 
 .modal-img {
     width: 250px;
-    min-height: 375px;
+    height: 375px;
     object-fit: cover;
     border-radius: 12px 0 0 12px;
-    flex-shrink: 0;
+    display: block;
 }
 
 .modal-info {
@@ -512,6 +512,88 @@ section h1 {
     padding: 20px 0;
 }
 
+/* === BANNER PUBLICITARIO === */
+.ad-banner {
+    background: #0a0a0a;
+    border-top: 1px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 18px 30px;
+    text-align: center;
+    color: #333;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === TRAILER === */
+.modal-poster-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 250px;
+}
+
+.btn-trailer {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(212, 175, 55, 0.92);
+    color: #000;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-trailer:hover:not(:disabled) {
+    background: #D4AF37;
+    transform: translateX(-50%) scale(1.05);
+}
+
+.btn-trailer:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.trailer-frame {
+    width: 250px;
+    height: 375px;
+    border-radius: 8px 0 0 8px;
+    display: block;
+}
+
+/* === MODAL TEXTO (política / acerca) === */
+.modal-texto {
+    max-width: 560px;
+}
+
+.modal-texto h2 {
+    color: #D4AF37;
+    margin-top: 0;
+}
+
+.modal-texto h3 {
+    color: #fff;
+    margin-top: 20px;
+}
+
+.modal-texto p {
+    color: #bbb;
+    line-height: 1.65;
+    font-size: 0.9rem;
+}
+
+.modal-texto a {
+    color: #D4AF37;
+}
+
 /* === FOOTER === */
 .footer {
     padding: 40px 30px 30px;
@@ -542,10 +624,26 @@ section h1 {
     color: #D4AF37;
 }
 
+.footer-tmdb {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #333;
+    margin: 8px 0 4px;
+}
+
+.footer-tmdb a {
+    color: #4f627b;
+    text-decoration: none;
+}
+
+.footer-tmdb a:hover {
+    color: #D4AF37;
+}
+
 .footer-copy {
     text-align: center;
-    font-size: 0.78rem;
-    margin: 0;
+    font-size: 0.75rem;
+    margin: 4px 0 0;
     color: #2a2a2a;
 }
 
@@ -596,10 +694,19 @@ section h1 {
         flex-direction: column;
     }
 
+    .modal-poster-wrap {
+        width: 100%;
+    }
+
     .modal-img {
         width: 100%;
-        min-height: unset;
         height: 300px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .trailer-frame {
+        width: 100%;
+        height: 260px;
         border-radius: 12px 12px 0 0;
     }
 

@@ -165,40 +165,40 @@ const MENU_COMIDA = [
     categoria: "Combos",
     icono: "🍿",
     items: [
-      { nombre: "Combo Solo", descripcion: "Palomitas medianas + refresco grande", precio: "$75" },
-      { nombre: "Combo Pareja", descripcion: "2 palomitas medianas + 2 refrescos grandes", precio: "$130" },
-      { nombre: "Combo Familiar", descripcion: "Palomitas grandes + 4 refrescos medianos + nachos", precio: "$200" },
-      { nombre: "Combo Premium", descripcion: "Palomitas grandes + 2 refrescos + nachos + hot dog", precio: "$165" }
+      { nombre: "Combo Solo", descripcion: "Crispetas medianas + bebida grande", precio: "$22.000" },
+      { nombre: "Combo Pareja", descripcion: "2 crispetas medianas + 2 bebidas grandes", precio: "$38.000" },
+      { nombre: "Combo Familiar", descripcion: "Crispetas grandes + 4 bebidas medianas + nachos", precio: "$58.000" },
+      { nombre: "Combo Premium", descripcion: "Crispetas grandes + 2 bebidas + nachos + perro caliente", precio: "$48.000" }
     ]
   },
   {
-    categoria: "Palomitas",
+    categoria: "Crispetas",
     icono: "🍿",
     items: [
-      { nombre: "Palomitas Pequeñas", descripcion: "Con mantequilla, 350 ml", precio: "$35" },
-      { nombre: "Palomitas Medianas", descripcion: "Con mantequilla, 700 ml", precio: "$50" },
-      { nombre: "Palomitas Grandes", descripcion: "Con mantequilla, 1.1 L", precio: "$65" },
-      { nombre: "Palomitas Caramelizadas", descripcion: "Sabor caramelo, tamaño mediano", precio: "$60" }
+      { nombre: "Crispetas Pequeñas", descripcion: "Con mantequilla", precio: "$9.000" },
+      { nombre: "Crispetas Medianas", descripcion: "Con mantequilla", precio: "$13.000" },
+      { nombre: "Crispetas Grandes", descripcion: "Con mantequilla", precio: "$18.000" },
+      { nombre: "Crispetas Caramelo", descripcion: "Sabor caramelo, tamaño mediano", precio: "$15.000" }
     ]
   },
   {
     categoria: "Bebidas",
     icono: "🥤",
     items: [
-      { nombre: "Refresco Pequeño", descripcion: "355 ml, varios sabores", precio: "$30" },
-      { nombre: "Refresco Mediano", descripcion: "473 ml, varios sabores", precio: "$40" },
-      { nombre: "Refresco Grande", descripcion: "710 ml, varios sabores", precio: "$50" },
-      { nombre: "Agua Mineral", descripcion: "500 ml", precio: "$25" }
+      { nombre: "Gaseosa Pequeña", descripcion: "300 ml, varios sabores", precio: "$7.000" },
+      { nombre: "Gaseosa Mediana", descripcion: "500 ml, varios sabores", precio: "$10.000" },
+      { nombre: "Gaseosa Grande", descripcion: "750 ml, varios sabores", precio: "$13.000" },
+      { nombre: "Agua Cristal", descripcion: "600 ml", precio: "$5.000" }
     ]
   },
   {
     categoria: "Snacks",
     icono: "🌮",
     items: [
-      { nombre: "Nachos con Queso", descripcion: "Con dip de queso cheddar caliente", precio: "$55" },
-      { nombre: "Hot Dog", descripcion: "Con catsup, mostaza y mayonesa", precio: "$45" },
-      { nombre: "Papas Fritas", descripcion: "Porción mediana con aderezo ranch", precio: "$40" },
-      { nombre: "Churros", descripcion: "3 piezas con chocolate para dip", precio: "$35" }
+      { nombre: "Nachos con Queso", descripcion: "Con dip de queso cheddar caliente", precio: "$16.000" },
+      { nombre: "Perro Caliente", descripcion: "Con mostaza, kétchup y mayonesa", precio: "$12.000" },
+      { nombre: "Papas Fritas", descripcion: "Porción mediana con aderezo", precio: "$11.000" },
+      { nombre: "Churros", descripcion: "3 unidades con chocolate", precio: "$9.000" }
     ]
   }
 ];

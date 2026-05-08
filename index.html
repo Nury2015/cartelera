@@ -4,8 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NuestroCine - Cartelera</title>
+    <title>NuestroCine - Cartelera, estrenos y tendencias</title>
+    <meta name="description" content="Descubre qué películas están en cartelera, cuáles son tendencia esta semana y los próximos estrenos del año.">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Google AdSense: reemplaza ca-pub-XXXXXXXXXXXXXXXX con tu ID real -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 </head>
 
 <body>
@@ -14,12 +18,32 @@
         <nav>
             <ul>
                 <li><a class="nuestro" href="#home">NuestroCine</a></li>
+                <li><a href="#tendencias">Tendencias</a></li>
                 <li><a href="#cartelera">Cartelera</a></li>
-                <li><a href="#pronto">Próximamente</a></li>
+                <li><a href="#pronto">Estrenos</a></li>
                 <li><a href="#comida">Comida</a></li>
             </ul>
         </nav>
     </header>
+
+    <!-- TENDENCIAS -->
+    <section id="tendencias">
+        <h1>EN TENDENCIA ESTA SEMANA</h1>
+        <div class="container" id="tendencias-container"></div>
+    </section>
+
+    <!-- BANNER PUBLICITARIO 1 -->
+    <div class="ad-banner">
+        <span>Espacio publicitario — aquí irán tus anuncios de AdSense</span>
+        <!-- Cuando tengas tu ID de AdSense, reemplaza esto:
+        <ins class="adsbygoogle" style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+    </div>
 
     <!-- CARTELERA -->
     <section id="cartelera">
@@ -28,9 +52,14 @@
         <div class="container" id="peliculas-container"></div>
     </section>
 
+    <!-- BANNER PUBLICITARIO 2 -->
+    <div class="ad-banner">
+        <span>Espacio publicitario — aquí irán tus anuncios de AdSense</span>
+    </div>
+
     <!-- PRÓXIMAMENTE -->
     <section id="pronto">
-        <h1>PRÓXIMAMENTE</h1>
+        <h1>ESTRENOS DEL AÑO</h1>
         <div class="container" id="pronto-container"></div>
     </section>
 
@@ -53,12 +82,44 @@
 
     <footer class="footer">
         <ul class="pie_pagina">
-            <li><a href="#informacion">Información legal</a></li>
-            <li><a href="#acerca">Acerca de nosotros</a></li>
-            <li><a href="#contactanos">Contáctanos</a></li>
+            <li><a href="#politica" onclick="abrirPolitica()">Política de privacidad</a></li>
+            <li><a href="#acerca" onclick="abrirAcerca()">Acerca de nosotros</a></li>
+            <li><a href="mailto:contacto@nuestrocine.com">Contáctanos</a></li>
         </ul>
-        <p class="footer-copy">&copy; 2024 NuestroCine. Todos los derechos reservados.</p>
+        <p class="footer-tmdb">
+            Datos proporcionados por <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>
+        </p>
+        <p class="footer-copy">&copy; <span id="anio-footer"></span> NuestroCine. Todos los derechos reservados.</p>
     </footer>
+
+    <!-- MODAL POLÍTICA DE PRIVACIDAD -->
+    <div class="modal-overlay" id="modal-politica" style="display:none;">
+        <div class="modal-content modal-texto">
+            <button class="modal-close" onclick="cerrarPolitica()">&times;</button>
+            <div style="padding:32px">
+                <h2>Política de Privacidad</h2>
+                <p>NuestroCine es un sitio informativo sobre películas en cartelera. No recopilamos datos personales de los usuarios.</p>
+                <h3>Publicidad</h3>
+                <p>Este sitio puede mostrar anuncios de terceros (Google AdSense). Estos servicios usan cookies para mostrar anuncios relevantes. Puedes configurar tus preferencias en <a href="https://adssettings.google.com" target="_blank">Google Ad Settings</a>.</p>
+                <h3>Datos de películas</h3>
+                <p>La información de películas es proporcionada por <a href="https://www.themoviedb.org" target="_blank">The Movie Database (TMDB)</a>. NuestroCine no es respaldado ni certificado por TMDB.</p>
+                <h3>Contacto</h3>
+                <p>Para cualquier consulta escríbenos a: contacto@nuestrocine.com</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ACERCA DE -->
+    <div class="modal-overlay" id="modal-acerca" style="display:none;">
+        <div class="modal-content modal-texto">
+            <button class="modal-close" onclick="cerrarAcerca()">&times;</button>
+            <div style="padding:32px">
+                <h2>Acerca de NuestroCine</h2>
+                <p>NuestroCine es tu guía de películas actualizada en tiempo real. Aquí encuentras qué está en cartelera, qué es tendencia esta semana y cuáles son los próximos estrenos del año.</p>
+                <p>Los datos de películas, posters y calificaciones son obtenidos automáticamente desde <a href="https://www.themoviedb.org" target="_blank">The Movie Database</a>.</p>
+            </div>
+        </div>
+    </div>
 
     <script src="peliculas.js"></script>
     <script src="config.js"></script>

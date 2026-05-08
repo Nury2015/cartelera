@@ -6,6 +6,7 @@ let peliculaActual   = null;
 let fechaSeleccionada = 0;
 let peliculasCache   = [];   // cartelera
 let proximasCache    = [];   // próximamente
+let tendenciasCache  = [];   // trending semanal
 
 // Mapa de género IDs de TMDB → español
 const GENEROS_TMDB = {
@@ -26,11 +27,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const apiConfigurada = CONFIG.TMDB_API_KEY && CONFIG.TMDB_API_KEY !== 'TU_API_KEY_AQUI';
 
+    document.getElementById('anio-footer').textContent = new Date().getFullYear();
+
     if (apiConfigurada) {
+        mostrarLoading('tendencias-container', true);
         mostrarLoading('peliculas-container', true);
         mostrarLoading('pronto-container', true);
         try {
-            await Promise.all([cargarCartelera(), cargarProximamente()]);
+            await Promise.all([cargarTendencias(), cargarCartelera(), cargarProximamente()]);
         } catch (err) {
             console.warn('Error con la API, usando datos locales:', err);
             usarDatosLocales();
@@ -41,8 +45,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function usarDatosLocales() {
-    peliculasCache = PELICULAS_EN_CARTELERA;
-    proximasCache  = PROXIMAMENTE;
+    peliculasCache  = PELICULAS_EN_CARTELERA;
+    proximasCache   = PROXIMAMENTE;
+    tendenciasCache = PELICULAS_EN_CARTELERA.slice(0, 6);
+    renderTendencias();
     renderFiltros();
     renderPeliculas();
     renderProximamente();
@@ -57,6 +63,13 @@ async function tmdbFetch(endpoint) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`TMDB ${res.status}`);
     return res.json();
+}
+
+async function cargarTendencias() {
+    const data = await tmdbFetch('/trending/movie/week');
+    tendenciasCache = data.results.slice(0, 6).map(normalizarPelicula);
+    mostrarLoading('tendencias-container', false);
+    renderTendencias();
 }
 
 async function cargarCartelera() {
@@ -98,6 +111,18 @@ async function cargarProximamente() {
 async function cargarDetallePelicula(id) {
     try {
         return await tmdbFetch(`/movie/${id}`);
+    } catch {
+        return null;
+    }
+}
+
+async function cargarTrailer(id) {
+    try {
+        const data = await tmdbFetch(`/movie/${id}/videos`);
+        const trailer = data.results.find(v =>
+            v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+        );
+        return trailer ? `https://www.youtube.com/embed/${trailer.key}?autoplay=1` : null;
     } catch {
         return null;
     }
@@ -170,6 +195,11 @@ function renderPeliculas() {
     }
 
     container.innerHTML = filtradas.map(p => tarjetaPelicula(p, true)).join('');
+}
+
+function renderTendencias() {
+    document.getElementById('tendencias-container').innerHTML =
+        tendenciasCache.map(p => tarjetaPelicula(p, true)).join('');
 }
 
 function renderProximamente() {
@@ -295,8 +325,13 @@ function renderModal() {
 
     document.getElementById('modal-body').innerHTML = `
         <div class="modal-pelicula">
-            <img class="modal-img" src="${p.imagen}" alt="${p.titulo}"
-                 onerror="this.src='https://placehold.co/250x375/111/d4af37?text=${encodeURIComponent(p.titulo)}'">
+            <div class="modal-poster-wrap">
+                <img class="modal-img" id="modal-poster" src="${p.imagen}" alt="${p.titulo}"
+                     onerror="this.src='https://placehold.co/250x375/111/d4af37?text=${encodeURIComponent(p.titulo)}'">
+                <button class="btn-trailer" id="btn-trailer" onclick="verTrailer(${p.id})">
+                    &#9654; Ver trailer
+                </button>
+            </div>
             <div class="modal-info">
                 <h2>${p.titulo}</h2>
                 <div class="modal-meta">
@@ -323,6 +358,30 @@ function renderModal() {
                 </div>
             </div>
         </div>`;
+}
+
+async function verTrailer(id) {
+    const btn = document.getElementById('btn-trailer');
+    if (btn) { btn.textContent = 'Cargando…'; btn.disabled = true; }
+
+    const apiConfigurada = CONFIG.TMDB_API_KEY && CONFIG.TMDB_API_KEY !== 'TU_API_KEY_AQUI';
+    const url = apiConfigurada ? await cargarTrailer(id) : null;
+
+    if (!url) {
+        mostrarToast('Trailer no disponible para esta película');
+        if (btn) { btn.textContent = '✕ No disponible'; }
+        return;
+    }
+
+    // Reemplaza el poster con el iframe de YouTube
+    const wrap = document.getElementById('modal-poster').parentElement;
+    wrap.innerHTML = `
+        <iframe class="trailer-frame"
+                src="${url}"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+        </iframe>`;
 }
 
 function cambiarFecha(index) {
@@ -371,6 +430,23 @@ function formatFecha(str) {
     const [y, m, d] = str.split('-');
     const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
     return `${parseInt(d)} ${meses[parseInt(m) - 1]} ${y}`;
+}
+
+function abrirPolitica() {
+    document.getElementById('modal-politica').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function cerrarPolitica() {
+    document.getElementById('modal-politica').style.display = 'none';
+    document.body.style.overflow = '';
+}
+function abrirAcerca() {
+    document.getElementById('modal-acerca').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function cerrarAcerca() {
+    document.getElementById('modal-acerca').style.display = 'none';
+    document.body.style.overflow = '';
 }
 
 function setupNavScroll() {

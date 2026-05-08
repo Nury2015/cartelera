@@ -1,160 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>carteleracine</title>
+    <title>NuestroCine - Cartelera</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header>
+
+    <header id="home">
         <nav>
             <ul>
                 <li><a class="nuestro" href="#home">NuestroCine</a></li>
                 <li><a href="#cartelera">Cartelera</a></li>
-                <li><a href="#pronto">Pronto</a></li>
+                <li><a href="#pronto">Próximamente</a></li>
                 <li><a href="#comida">Comida</a></li>
             </ul>
-
-
         </nav>
-
     </header>
 
-    <h1>
-        EN CARTELERA
-    </h1>
-
-
-    <section class="container">
-        <div class="carta">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ7xF3fzFhsXDggKXUa8UMSyG1kgMg3OXHgg&s"
-                alt="">
-            <h2>
-                Mi villano favorito 4
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-        <div class="carta">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSTS_J9b94ev7DVi9IczSe4MfYkitivnv30w&s"
-                alt="">
-            <h2>
-                Intensamente 2
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-        <div class="carta">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSq9SoWNRu9aLb69QRgRCIGQpt7wU8dyDDPwQ&s"
-                alt="">
-            <h2>
-                El depredador
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-        <div class="carta">
-            <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSci1J1mSfb-AI_XsU2y0i3pDOOlXKekXXjd8PF3yNu778-WkOp"
-                alt="">
-            <h2>
-                El planeta de los simios
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-        <div class="carta">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS0HAZS1wT6LBp57cMOfOQg12BREF4OiYcYskcVITbyG5XaFBqQg83WAgVnY8086m611s&usqp=CAU"
-                alt="">
-            <h2>
-                Rohirrim
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-        <div class="carta">
-            <img src="https://www.ecartelera.com/carteles/1000/1062/001_m.jpg" alt="">
-            <h2>
-                Clic
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-
-        <div class="carta">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF_64-tIxGHBEp0SjN6YLGq_OrE7ytU3eYZg&s"
-                alt="">
-            <h2>
-                El despertar
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
-
-        <div class="carta">
-            <img src="https://es.web.img3.acsta.net/c_310_420/medias/nmedia/18/78/66/37/20165822.jpg" alt="">
-            <h2>
-                Ojalá fuera cierto
-            </h2>
-            <p>
-                Fecha de estreno
-            </p>
-            <p>
-                Género: Animación, aventura, comedia
-            </p>
-        </div>
-
+    <!-- CARTELERA -->
+    <section id="cartelera">
+        <h1>EN CARTELERA</h1>
+        <div class="filtros" id="filtros"></div>
+        <div class="container" id="peliculas-container"></div>
     </section>
-  
-    <footer class="footer">
-        <div>
-            <ul class="pie_pagina">
 
-                <li><a class="nuestro" href="#informacion">información legal</a></li>
-                <li><a class="nuestro" href="#acerca">Acerca de nosotros</a></li>
-                <li><a class="nuestro" href="#contactanos">Contáctanos</a></li>
-            </ul>
+    <!-- PRÓXIMAMENTE -->
+    <section id="pronto">
+        <h1>PRÓXIMAMENTE</h1>
+        <div class="container" id="pronto-container"></div>
+    </section>
 
+    <!-- COMIDA -->
+    <section id="comida">
+        <h1>COMIDA &amp; BEBIDAS</h1>
+        <div id="menu-container"></div>
+    </section>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal" style="display:none;">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-body" id="modal-body"></div>
         </div>
+    </div>
 
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <footer class="footer">
+        <ul class="pie_pagina">
+            <li><a href="#informacion">Información legal</a></li>
+            <li><a href="#acerca">Acerca de nosotros</a></li>
+            <li><a href="#contactanos">Contáctanos</a></li>
+        </ul>
+        <p class="footer-copy">&copy; 2024 NuestroCine. Todos los derechos reservados.</p>
     </footer>
+
+    <script src="peliculas.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
 
 </body>
 

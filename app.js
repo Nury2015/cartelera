@@ -201,44 +201,56 @@ function renderTendencias() {
         tendenciasCache.map(p => tarjetaPelicula(p, true)).join('');
 }
 
-let mesActivo = null; // null = mes actual
+let mesActivo    = null;
+let gruposMeses  = {};
+
+const MESES_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+function agruparPorMes(peliculas) {
+    const g = {};
+    peliculas.forEach(p => {
+        if (!p.estreno) return;
+        const [y, m] = p.estreno.split('-');
+        const clave = `${y}-${m}`;
+        if (!g[clave]) g[clave] = [];
+        g[clave].push(p);
+    });
+    return g;
+}
 
 function renderProximamente() {
     if (proximasCache.length === 0) return;
 
-    // Agrupar por mes
-    const grupos = {};
-    proximasCache.forEach(p => {
-        if (!p.estreno) return;
-        const [y, m] = p.estreno.split('-');
-        const clave  = `${y}-${m}`;
-        if (!grupos[clave]) grupos[clave] = [];
-        grupos[clave].push(p);
-    });
+    gruposMeses    = agruparPorMes(proximasCache);
+    const claves   = Object.keys(gruposMeses).sort();
+    if (!mesActivo || !gruposMeses[mesActivo]) mesActivo = claves[0];
 
-    const claves = Object.keys(grupos).sort();
-    if (!mesActivo || !grupos[mesActivo]) mesActivo = claves[0];
+    // Tabs de mes — van en su propio wrapper, FUERA del grid
+    document.getElementById('mes-tabs-wrapper').innerHTML = `
+        <div class="mes-tabs">
+            ${claves.map(c => {
+                const [y, m] = c.split('-');
+                const label  = `${MESES_ES[parseInt(m) - 1]} ${y}`;
+                return `<button class="mes-tab ${c === mesActivo ? 'activo' : ''}"
+                                data-clave="${c}"
+                                onclick="cambiarMes('${c}')">${label}</button>`;
+            }).join('')}
+        </div>`;
 
-    const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    // Películas del mes activo — van en el grid
+    renderPelicularMes();
+}
 
-    const tabsHTML = claves.map(c => {
-        const [y, m] = c.split('-');
-        const label  = `${MESES[parseInt(m) - 1]} ${y}`;
-        return `<button class="mes-tab ${c === mesActivo ? 'activo' : ''}"
-                        onclick="cambiarMes('${c}')">${label}</button>`;
-    }).join('');
-
-    const pelisHTML = grupos[mesActivo].map(p => tarjetaProximamente(p)).join('');
-
-    document.getElementById('pronto-container').innerHTML = `
-        <div class="mes-tabs" id="mes-tabs">${tabsHTML}</div>
-        <div class="container" id="mes-peliculas">${pelisHTML}</div>`;
+function renderPelicularMes() {
+    document.getElementById('pronto-container').innerHTML =
+        (gruposMeses[mesActivo] || []).map(p => tarjetaProximamente(p)).join('');
 }
 
 function cambiarMes(clave) {
     mesActivo = clave;
-    renderProximamente();
-    document.getElementById('pronto').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.mes-tab').forEach(b =>
+        b.classList.toggle('activo', b.dataset.clave === clave));
+    renderPelicularMes();
 }
 
 function tarjetaPelicula(p, clickable) {

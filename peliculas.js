@@ -164,129 +164,54 @@ const CINES = [
   {
     id: 'cine-colombia',
     nombre: 'Cine Colombia',
+    web: 'https://www.cinecolombia.com',
+    color: '#e63946',
     boletas: [
-      { tipo: '2D — Adulto',              precio: '$17.900' },
-      { tipo: '2D — Niño / Adulto mayor', precio: '$13.900' },
-      { tipo: '3D',                        precio: '$21.900' },
-      { tipo: '4DX',                       precio: '$28.900' },
-      { tipo: 'IMAX',                      precio: '$29.900' }
+      { tipo: '2D — Adulto',              valor: 17900 },
+      { tipo: '2D — Niño / Adulto mayor', valor: 13900 },
+      { tipo: '3D',                        valor: 21900 },
+      { tipo: '4DX',                       valor: 28900 },
+      { tipo: 'IMAX',                      valor: 29900 }
     ],
     promos: [
-      'Miércoles: 50 % de descuento en boletería estándar',
-      'Martes: 2x1 en funciones seleccionadas con Bancolombia',
-      'Niños menores de 3 años: entrada gratuita'
-    ],
-    menu: [
-      { categoria: 'Combos', icono: '🍿', items: [
-        { nombre: 'Combo Solo',     descripcion: 'Crispetas medianas + bebida grande',               precio: '$22.900' },
-        { nombre: 'Combo Pareja',   descripcion: '2 crispetas medianas + 2 bebidas grandes',         precio: '$39.900' },
-        { nombre: 'Combo Familiar', descripcion: 'Crispetas grandes + 4 bebidas + nachos',           precio: '$59.900' },
-        { nombre: 'Combo Premium',  descripcion: 'Crispetas grandes + 2 bebidas + nachos + perro',   precio: '$49.900' }
-      ]},
-      { categoria: 'Crispetas', icono: '🍿', items: [
-        { nombre: 'Crispetas Pequeñas',  descripcion: 'Con mantequilla',              precio: '$9.900'  },
-        { nombre: 'Crispetas Medianas',  descripcion: 'Con mantequilla',              precio: '$13.900' },
-        { nombre: 'Crispetas Grandes',   descripcion: 'Con mantequilla',              precio: '$18.900' },
-        { nombre: 'Crispetas Caramelo',  descripcion: 'Sabor caramelo, medianas',     precio: '$15.900' }
-      ]},
-      { categoria: 'Bebidas', icono: '🥤', items: [
-        { nombre: 'Gaseosa Pequeña',  descripcion: '300 ml',  precio: '$7.400'  },
-        { nombre: 'Gaseosa Mediana',  descripcion: '500 ml',  precio: '$10.400' },
-        { nombre: 'Gaseosa Grande',   descripcion: '750 ml',  precio: '$13.400' },
-        { nombre: 'Agua Cristal',     descripcion: '600 ml',  precio: '$5.400'  }
-      ]},
-      { categoria: 'Snacks', icono: '🌮', items: [
-        { nombre: 'Nachos con Queso', descripcion: 'Con dip de queso cheddar',          precio: '$16.900' },
-        { nombre: 'Perro Caliente',   descripcion: 'Con mostaza, kétchup y mayonesa',   precio: '$12.900' },
-        { nombre: 'Papas Fritas',     descripcion: 'Porción mediana con aderezo',        precio: '$11.900' },
-        { nombre: 'Churros',          descripcion: '3 unidades con chocolate',           precio: '$9.900'  }
-      ]}
+      { dia: 'MIÉ', texto: '50 % de descuento en boletería estándar' },
+      { dia: 'MAR', texto: '2×1 en funciones seleccionadas con Bancolombia' },
+      { dia: 'TODO', texto: 'Niños menores de 3 años entran gratis' }
     ]
   },
   {
     id: 'cinemark',
     nombre: 'Cinemark',
+    web: 'https://www.cinemark.com.co',
+    color: '#f4a261',
     boletas: [
-      { tipo: '2D — Adulto',              precio: '$15.900' },
-      { tipo: '2D — Niño / Adulto mayor', precio: '$12.900' },
-      { tipo: '3D',                        precio: '$19.900' },
-      { tipo: 'XD (Extreme Digital)',      precio: '$22.900' }
+      { tipo: '2D — Adulto',              valor: 15900 },
+      { tipo: '2D — Niño / Adulto mayor', valor: 12900 },
+      { tipo: '3D',                        valor: 19900 },
+      { tipo: 'XD (Extreme Digital)',      valor: 22900 }
     ],
     promos: [
-      'Martes: $10.000 la boleta en salas 2D',
-      'Miércoles: 2x1 en todas las funciones',
-      'Cumpleañeros: boleta gratis en el mes de tu cumpleaños'
-    ],
-    menu: [
-      { categoria: 'Combos', icono: '🍿', items: [
-        { nombre: 'Combo Solo',     descripcion: 'Crispetas medianas + bebida grande',             precio: '$20.900' },
-        { nombre: 'Combo Pareja',   descripcion: '2 crispetas medianas + 2 bebidas grandes',       precio: '$36.900' },
-        { nombre: 'Combo Familiar', descripcion: 'Crispetas grandes + 4 bebidas + nachos',         precio: '$55.900' },
-        { nombre: 'Combo Premium',  descripcion: 'Crispetas grandes + 2 bebidas + nachos + perro', precio: '$45.900' }
-      ]},
-      { categoria: 'Crispetas', icono: '🍿', items: [
-        { nombre: 'Crispetas Pequeñas',  descripcion: 'Con mantequilla',           precio: '$8.900'  },
-        { nombre: 'Crispetas Medianas',  descripcion: 'Con mantequilla',           precio: '$12.400' },
-        { nombre: 'Crispetas Grandes',   descripcion: 'Con mantequilla',           precio: '$16.900' },
-        { nombre: 'Crispetas Caramelo',  descripcion: 'Sabor caramelo, medianas',  precio: '$14.900' }
-      ]},
-      { categoria: 'Bebidas', icono: '🥤', items: [
-        { nombre: 'Gaseosa Pequeña', descripcion: '300 ml', precio: '$6.900'  },
-        { nombre: 'Gaseosa Mediana', descripcion: '500 ml', precio: '$9.900'  },
-        { nombre: 'Gaseosa Grande',  descripcion: '750 ml', precio: '$12.900' },
-        { nombre: 'Agua Cristal',    descripcion: '600 ml', precio: '$4.900'  }
-      ]},
-      { categoria: 'Snacks', icono: '🌮', items: [
-        { nombre: 'Nachos con Queso', descripcion: 'Con dip de queso cheddar',        precio: '$15.400' },
-        { nombre: 'Perro Caliente',   descripcion: 'Con mostaza, kétchup y mayonesa', precio: '$11.900' },
-        { nombre: 'Papas Fritas',     descripcion: 'Porción mediana',                  precio: '$10.900' },
-        { nombre: 'Churros',          descripcion: '3 unidades con chocolate',         precio: '$8.900'  }
-      ]}
+      { dia: 'MAR', texto: '$10.000 la boleta en salas 2D' },
+      { dia: 'MIÉ', texto: '2×1 en todas las funciones' },
+      { dia: 'TODO', texto: 'Cumpleañeros: boleta gratis en tu mes' }
     ]
   },
   {
     id: 'cinepolis',
     nombre: 'Cinépolis',
+    web: 'https://www.cinepolis.com.co',
+    color: '#2a9d8f',
     boletas: [
-      { tipo: '2D — Adulto',              precio: '$18.900' },
-      { tipo: '2D — Niño / Adulto mayor', precio: '$14.900' },
-      { tipo: '3D',                        precio: '$22.900' },
-      { tipo: 'VIP (sala premium)',         precio: '$38.900' },
-      { tipo: '4DX',                        precio: '$30.900' }
+      { tipo: '2D — Adulto',              valor: 18900 },
+      { tipo: '2D — Niño / Adulto mayor', valor: 14900 },
+      { tipo: '3D',                        valor: 22900 },
+      { tipo: '4DX',                       valor: 30900 },
+      { tipo: 'VIP (sala premium)',         valor: 38900 }
     ],
     promos: [
-      'Martes y miércoles: 2x1 en salas 2D y 3D',
-      'Cinépolis Klic: 20 % de descuento pagando con app',
-      'Sala VIP incluye silla reclinable, menú a la butaca y bebidas'
-    ],
-    menu: [
-      { categoria: 'Combos', icono: '🍿', items: [
-        { nombre: 'Combo Solo',     descripcion: 'Crispetas medianas + bebida grande',             precio: '$25.900' },
-        { nombre: 'Combo Pareja',   descripcion: '2 crispetas medianas + 2 bebidas grandes',       precio: '$44.900' },
-        { nombre: 'Combo Familiar', descripcion: 'Crispetas grandes + 4 bebidas + nachos',         precio: '$64.900' },
-        { nombre: 'Combo VIP',      descripcion: 'Crispetas grandes + 2 bebidas + nachos + perro', precio: '$55.900' }
-      ]},
-      { categoria: 'Crispetas', icono: '🍿', items: [
-        { nombre: 'Crispetas Pequeñas',  descripcion: 'Con mantequilla',           precio: '$10.900' },
-        { nombre: 'Crispetas Medianas',  descripcion: 'Con mantequilla',           precio: '$14.900' },
-        { nombre: 'Crispetas Grandes',   descripcion: 'Con mantequilla',           precio: '$19.900' },
-        { nombre: 'Crispetas Caramelo',  descripcion: 'Sabor caramelo, medianas',  precio: '$16.900' }
-      ]},
-      { categoria: 'Bebidas', icono: '🥤', items: [
-        { nombre: 'Gaseosa Pequeña', descripcion: '300 ml', precio: '$8.400'  },
-        { nombre: 'Gaseosa Mediana', descripcion: '500 ml', precio: '$11.400' },
-        { nombre: 'Gaseosa Grande',  descripcion: '750 ml', precio: '$15.400' },
-        { nombre: 'Agua Cristal',    descripcion: '600 ml', precio: '$5.900'  }
-      ]},
-      { categoria: 'Snacks', icono: '🌮', items: [
-        { nombre: 'Nachos con Queso', descripcion: 'Con dip de queso cheddar',        precio: '$17.900' },
-        { nombre: 'Perro Caliente',   descripcion: 'Con mostaza, kétchup y mayonesa', precio: '$13.900' },
-        { nombre: 'Papas Fritas',     descripcion: 'Porción mediana',                  precio: '$12.900' },
-        { nombre: 'Churros',          descripcion: '3 unidades con chocolate',         precio: '$9.900'  }
-      ]}
+      { dia: 'MAR', texto: '2×1 en salas 2D y 3D' },
+      { dia: 'MIÉ', texto: '2×1 en salas 2D y 3D' },
+      { dia: 'TODO', texto: '20 % de descuento pagando con la app Klic' }
     ]
   }
 ];
-
-// Alias para compatibilidad con el fallback estático
-const MENU_COMIDA = CINES[0].menu;

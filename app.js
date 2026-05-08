@@ -88,23 +88,21 @@ async function cargarProximamente() {
     const hoy     = new Date().toISOString().split('T')[0];
     const finAnio = `${new Date().getFullYear()}-12-31`;
 
-    // Trae hasta 3 páginas (~60 estrenos) del año completo, ordenados por fecha
+    // Sin filtro de región para incluir todas las películas (Marvel, etc.)
     const params = `primary_release_date.gte=${hoy}&primary_release_date.lte=${finAnio}`
-                 + `&sort_by=release_date.asc&with_release_type=3`
-                 + `&region=${CONFIG.REGION}&vote_count.gte=1`;
+                 + `&sort_by=release_date.asc&vote_count.gte=0`
+                 + `&with_original_language=en|es`;
 
-    const pages = await Promise.all([1, 2, 3].map(p =>
+    const pages = await Promise.all([1, 2, 3, 4].map(p =>
         tmdbFetch(`/discover/movie?${params}&page=${p}`)
     ));
 
     const todos = pages.flatMap(p => p.results);
-    // Deduplicar por id
     const unicos = [...new Map(todos.map(m => [m.id, m])).values()];
     proximasCache = unicos.slice(0, CONFIG.MAX_PROXIMAMENTE).map(normalizarPelicula);
 
-    // Actualizar título con el año en curso
-    const h1Pronto = document.querySelector('#pronto h1');
-    if (h1Pronto) h1Pronto.textContent = `ESTRENOS ${new Date().getFullYear()}`;
+    const h1 = document.querySelector('#pronto h1');
+    if (h1) h1.textContent = `ESTRENOS ${new Date().getFullYear()}`;
 
     mostrarLoading('pronto-container', false);
     renderProximamente();
@@ -204,9 +202,44 @@ function renderTendencias() {
         tendenciasCache.map(p => tarjetaPelicula(p, true)).join('');
 }
 
+let mesActivo = null; // null = mes actual
+
 function renderProximamente() {
-    document.getElementById('pronto-container').innerHTML =
-        proximasCache.map(p => tarjetaProximamente(p)).join('');
+    if (proximasCache.length === 0) return;
+
+    // Agrupar por mes
+    const grupos = {};
+    proximasCache.forEach(p => {
+        if (!p.estreno) return;
+        const [y, m] = p.estreno.split('-');
+        const clave  = `${y}-${m}`;
+        if (!grupos[clave]) grupos[clave] = [];
+        grupos[clave].push(p);
+    });
+
+    const claves = Object.keys(grupos).sort();
+    if (!mesActivo || !grupos[mesActivo]) mesActivo = claves[0];
+
+    const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+    const tabsHTML = claves.map(c => {
+        const [y, m] = c.split('-');
+        const label  = `${MESES[parseInt(m) - 1]} ${y}`;
+        return `<button class="mes-tab ${c === mesActivo ? 'activo' : ''}"
+                        onclick="cambiarMes('${c}')">${label}</button>`;
+    }).join('');
+
+    const pelisHTML = grupos[mesActivo].map(p => tarjetaProximamente(p)).join('');
+
+    document.getElementById('pronto-container').innerHTML = `
+        <div class="mes-tabs" id="mes-tabs">${tabsHTML}</div>
+        <div class="container" id="mes-peliculas">${pelisHTML}</div>`;
+}
+
+function cambiarMes(clave) {
+    mesActivo = clave;
+    renderProximamente();
+    document.getElementById('pronto').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function tarjetaPelicula(p, clickable) {
@@ -250,16 +283,17 @@ function tarjetaProximamente(p) {
 }
 
 // ============================================================
-//  Render — Selector de cine + precios + comida
+//  Render — Selector de cine + precios
 // ============================================================
 function renderSelectorCine() {
     const tabs = document.getElementById('cine-tabs');
     tabs.innerHTML = CINES.map((c, i) => `
-        <button class="cine-tab ${i === cineActivo ? 'activo' : ''}" onclick="seleccionarCine(${i})">
+        <button class="cine-tab ${i === cineActivo ? 'activo' : ''}"
+                style="--cc:${c.color}"
+                onclick="seleccionarCine(${i})">
             ${c.nombre}
         </button>`).join('');
     renderPrecios();
-    renderMenu();
 }
 
 function seleccionarCine(index) {
@@ -267,139 +301,72 @@ function seleccionarCine(index) {
     document.querySelectorAll('.cine-tab').forEach((b, i) =>
         b.classList.toggle('activo', i === index));
     renderPrecios();
-    renderMenu();
+}
+
+function fmt(valor) {
+    return '$' + valor.toLocaleString('es-CO');
 }
 
 function renderPrecios() {
     const cine = CINES[cineActivo];
+
+    // Tipos comunes para la tabla comparativa
+    const tiposComunes = ['2D — Adulto', '2D — Niño / Adulto mayor', '3D'];
+
+    const comparativaHTML = tiposComunes.map(tipo => {
+        const celdas = CINES.map(c => {
+            const b = c.boletas.find(x => x.tipo === tipo);
+            const esActivo = c.id === cine.id;
+            return `<td class="${esActivo ? 'activo' : ''}">${b ? fmt(b.valor) : '—'}</td>`;
+        }).join('');
+        return `<tr><td class="tipo-label">${tipo}</td>${celdas}</tr>`;
+    }).join('');
+
     document.getElementById('precios-boletas').innerHTML = `
-        <div class="precios-wrap">
-            <div class="boletas-grid">
-                <h3 class="precios-titulo">Boletas</h3>
-                ${cine.boletas.map(b => `
-                    <div class="boleta-item">
-                        <span class="boleta-tipo">${b.tipo}</span>
-                        <span class="boleta-precio">${b.precio}</span>
-                    </div>`).join('')}
-            </div>
-            <div class="promos-box">
-                <h3 class="precios-titulo">Promociones</h3>
-                ${cine.promos.map(p => `<p class="promo-item">&#10003; ${p}</p>`).join('')}
-                <p class="precios-nota">* Precios aproximados. Pueden variar según ciudad y función.</p>
-            </div>
-        </div>`;
-}
+        <div class="precios-layout">
 
-function renderMenu() {
-    const menu = CINES[cineActivo]?.menu || MENU_COMIDA;
-    const combos    = menu.find(c => c.categoria === 'Combos');
-    const crispetas = menu.find(c => c.categoria === 'Crispetas');
-    const bebidas   = menu.find(c => c.categoria === 'Bebidas');
-    const snacks    = menu.find(c => c.categoria === 'Snacks');
-
-    document.getElementById('menu-container').innerHTML = `
-        ${renderCombos(combos)}
-        ${renderCrispetas(crispetas)}
-        ${renderBebidas(bebidas)}
-        ${renderSnacks(snacks)}
-    `;
-}
-
-const COMBO_EMOJIS   = ['🍿\n🥤', '🍿🍿\n🥤🥤', '🍿🍿\n🥤🥤\n🌮', '🍿🍿\n🥤🥤\n🌮🌭'];
-const COMBO_COLORES  = ['#2a1500', '#1a1500', '#1a1a00', '#1a0a1a'];
-
-function renderCombos(cat) {
-    if (!cat) return '';
-    return `
-        <div class="menu-bloque">
-            <h2 class="menu-cat-titulo">🍿 Combos</h2>
-            <div class="combos-grid">
-                ${cat.items.map((item, i) => `
-                    <div class="combo-card" style="--c:${COMBO_COLORES[i % 4]}">
-                        <div class="combo-emoji">${COMBO_EMOJIS[i % 4]}</div>
-                        <div class="combo-info">
-                            <h3>${item.nombre}</h3>
-                            <p>${item.descripcion}</p>
-                            <span class="combo-precio">${item.precio}</span>
-                        </div>
-                    </div>`).join('')}
-            </div>
-        </div>`;
-}
-
-const CRISPETA_SIZES = ['sm', 'md', 'lg', 'cr'];
-const CRISPETA_ICONS = ['🍿', '🍿', '🍿', '🍿'];
-
-function renderCrispetas(cat) {
-    if (!cat) return '';
-    return `
-        <div class="menu-bloque">
-            <div class="showcase-banner">
-                <div class="showcase-producto">
-                    <span class="showcase-emoji">🍿</span>
-                    <span class="showcase-label">Crispetas</span>
-                    <span class="showcase-desde">desde ${cat.items[0]?.precio}</span>
+            <!-- Tarjeta del cine seleccionado -->
+            <div class="precio-card" style="--cc:${cine.color}">
+                <div class="precio-card-header">
+                    <h2>${cine.nombre}</h2>
+                    <a href="${cine.web}" target="_blank" rel="noopener" class="btn-web-cine">
+                        Sitio oficial →
+                    </a>
                 </div>
-                <div class="showcase-mas">+</div>
-                <div class="showcase-producto">
-                    <span class="showcase-emoji">🥤</span>
-                    <span class="showcase-label">Bebida</span>
+
+                <div class="boletas-lista">
+                    ${cine.boletas.map(b => `
+                        <div class="boleta-fila">
+                            <span class="boleta-tipo">${b.tipo}</span>
+                            <span class="boleta-precio">${fmt(b.valor)}</span>
+                        </div>`).join('')}
                 </div>
-                <div class="showcase-texto">
-                    <strong>La combinación perfecta del cine</strong>
+
+                <div class="promos-lista">
+                    <h3>Promociones</h3>
+                    ${cine.promos.map(p => `
+                        <div class="promo-fila">
+                            <span class="promo-dia">${p.dia}</span>
+                            <span class="promo-texto">${p.texto}</span>
+                        </div>`).join('')}
                 </div>
             </div>
 
-            <h2 class="menu-cat-titulo">🍿 Crispetas</h2>
-            <div class="crispetas-grid">
-                ${cat.items.map((item, i) => `
-                    <div class="crispeta-card ${CRISPETA_SIZES[i]}">
-                        <span class="crispeta-icono">${CRISPETA_ICONS[i]}</span>
-                        <h3>${item.nombre.replace('Crispetas ', '')}</h3>
-                        <p class="crispeta-sub">${item.descripcion}</p>
-                        <span class="crispeta-precio">${item.precio}</span>
-                    </div>`).join('')}
+            <!-- Tabla comparativa -->
+            <div class="comparativa-wrap">
+                <h3 class="comparativa-titulo">Comparativa rápida</h3>
+                <table class="comparativa-tabla">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            ${CINES.map(c => `<th class="${c.id === cine.id ? 'activo' : ''}">${c.nombre}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>${comparativaHTML}</tbody>
+                </table>
+                <p class="precios-nota">* Precios aproximados. Pueden variar según ciudad, sala y función.</p>
             </div>
-        </div>`;
-}
 
-function renderBebidas(cat) {
-    if (!cat) return '';
-    return `
-        <div class="menu-bloque">
-            <h2 class="menu-cat-titulo">🥤 Bebidas</h2>
-            <div class="bebidas-grid">
-                ${cat.items.map(item => `
-                    <div class="bebida-card">
-                        <div class="bebida-icono">${item.nombre.includes('Agua') ? '💧' : '🥤'}</div>
-                        <h3>${item.nombre}</h3>
-                        <p>${item.descripcion}</p>
-                        <span class="bebida-precio">${item.precio}</span>
-                    </div>`).join('')}
-            </div>
-        </div>`;
-}
-
-function renderSnacks(cat) {
-    if (!cat) return '';
-    const SNACK_ICONS = { 'Nachos': '🌮', 'Perro': '🌭', 'Papas': '🍟', 'Churros': '🥐' };
-    return `
-        <div class="menu-bloque">
-            <h2 class="menu-cat-titulo">🌮 Snacks</h2>
-            <div class="snacks-grid">
-                ${cat.items.map(item => {
-                    const icon = Object.entries(SNACK_ICONS).find(([k]) => item.nombre.includes(k))?.[1] || '🍴';
-                    return `
-                    <div class="snack-card">
-                        <span class="snack-icono">${icon}</span>
-                        <div class="snack-info">
-                            <h3>${item.nombre}</h3>
-                            <p>${item.descripcion}</p>
-                        </div>
-                        <span class="snack-precio">${item.precio}</span>
-                    </div>`;
-                }).join('')}
-            </div>
         </div>`;
 }
 
@@ -440,6 +407,9 @@ async function abrirModal(id) {
 }
 
 function cerrarModal() {
+    // Detener el trailer antes de ocultar el modal
+    const frame = document.querySelector('.trailer-frame');
+    if (frame) frame.src = '';
     document.getElementById('modal').style.display = 'none';
     document.body.style.overflow = '';
 }

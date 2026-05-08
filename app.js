@@ -87,22 +87,23 @@ async function cargarProximamente() {
     const hoy     = new Date().toISOString().split('T')[0];
     const finAnio = `${new Date().getFullYear()}-12-31`;
 
-    // Sin filtro de región para incluir todas las películas (Marvel, etc.)
+    // Sin filtro de idioma ni región para incluir Marvel y todo el año
     const params = `primary_release_date.gte=${hoy}&primary_release_date.lte=${finAnio}`
-                 + `&sort_by=release_date.asc&vote_count.gte=0`
-                 + `&with_original_language=en|es`;
+                 + `&sort_by=release_date.asc&popularity.gte=2`;
 
-    const pages = await Promise.all([1, 2, 3, 4].map(p =>
-        tmdbFetch(`/discover/movie?${params}&page=${p}`)
-    ));
+    // 8 páginas = hasta 160 películas, cubre nov/dic
+    const pages = await Promise.all(
+        [1,2,3,4,5,6,7,8].map(p => tmdbFetch(`/discover/movie?${params}&page=${p}`))
+    );
 
-    const todos = pages.flatMap(p => p.results);
+    const todos  = pages.flatMap(p => p.results);
     const unicos = [...new Map(todos.map(m => [m.id, m])).values()];
     proximasCache = unicos.slice(0, CONFIG.MAX_PROXIMAMENTE).map(normalizarPelicula);
 
     const h1 = document.querySelector('#pronto h1');
     if (h1) h1.textContent = `ESTRENOS ${new Date().getFullYear()}`;
 
+    document.getElementById('mes-tabs-wrapper').innerHTML = '';
     mostrarLoading('pronto-container', false);
     renderProximamente();
 }
@@ -131,17 +132,17 @@ async function cargarTrailer(id) {
 //  Normalización de datos TMDB → formato interno
 // ============================================================
 function normalizarPelicula(m) {
+    const placeholder = `https://placehold.co/220x330/111/d4af37?text=${encodeURIComponent(m.title)}`;
     return {
         id:            m.id,
         titulo:        m.title,
-        imagen:        m.poster_path
-                         ? `${CONFIG.IMG_BASE}${m.poster_path}`
-                         : `https://placehold.co/220x330/111/d4af37?text=${encodeURIComponent(m.title)}`,
+        imagen:        m.poster_path ? `${CONFIG.IMG_CARD}${m.poster_path}` : placeholder,
+        imagenGrande:  m.poster_path ? `${CONFIG.IMG_BASE}${m.poster_path}` : placeholder,
         generos:       (m.genre_ids || []).slice(0, 3).map(id => GENEROS_TMDB[id] || 'Otro'),
         duracion:      m.runtime ? `${m.runtime} min` : null,
         clasificacion: m.adult ? 'Mayores de 18' : 'Todo público',
         estreno:       m.release_date || '',
-        descripcion:   m.overview || 'Sin descripción disponible.',
+        descripcion:   m.overview || '',
         salas:         generarHorarios(m.id),
         calificacion:  Math.round(m.vote_average * 10) / 10
     };
@@ -257,9 +258,9 @@ function tarjetaPelicula(p, clickable) {
     return `
         <div class="carta${clickable ? '' : ' carta-pronto'}" ${clickable ? `onclick="abrirModal(${p.id})"` : ''}>
             <div class="carta-img-wrapper">
-                <img src="${p.imagen}" alt="${p.titulo}"
+                <img src="${p.imagen}" alt="${p.titulo}" loading="lazy"
                      onerror="this.src='https://placehold.co/220x330/111/d4af37?text=${encodeURIComponent(p.titulo)}'">
-                ${clickable ? '<div class="carta-overlay"><span class="ver-horarios">Ver horarios</span></div>' : ''}
+                ${clickable ? '<div class="carta-overlay"><span class="ver-horarios">Ver info</span></div>' : ''}
             </div>
             <div class="carta-info">
                 <h2>${p.titulo}</h2>
@@ -276,19 +277,21 @@ function tarjetaPelicula(p, clickable) {
 }
 
 function tarjetaProximamente(p) {
+    const desc = p.descripcion ? p.descripcion.slice(0, 90) + '…' : '';
     return `
-        <div class="carta carta-pronto">
+        <div class="carta carta-pronto" onclick="abrirModalProximo(${p.id})">
             <div class="carta-img-wrapper">
-                <img src="${p.imagen}" alt="${p.titulo}"
+                <img src="${p.imagen}" alt="${p.titulo}" loading="lazy"
                      onerror="this.src='https://placehold.co/220x330/111/d4af37?text=${encodeURIComponent(p.titulo)}'">
                 ${p.estreno ? `<div class="estreno-badge">Estreno ${formatFecha(p.estreno)}</div>` : ''}
+                <div class="carta-overlay"><span class="ver-horarios">Trailer + Info</span></div>
             </div>
             <div class="carta-info">
                 <h2>${p.titulo}</h2>
                 <div class="generos">
                     ${p.generos.map(g => `<span class="genero-badge">${g}</span>`).join('')}
                 </div>
-                <p class="descripcion-corta">${p.descripcion.slice(0, 90)}…</p>
+                ${desc ? `<p class="carta-desc">${desc}</p>` : ''}
             </div>
         </div>`;
 }
@@ -394,6 +397,65 @@ function setupModal() {
     });
 }
 
+async function abrirModalProximo(id) {
+    const p = proximasCache.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById('modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    document.getElementById('modal-body').innerHTML = `
+        <div class="modal-pelicula">
+            <div class="modal-poster-wrap">
+                <img class="modal-img" src="${p.imagenGrande}" alt="${p.titulo}" loading="lazy"
+                     onerror="this.src='https://placehold.co/250x375/111/d4af37?text=${encodeURIComponent(p.titulo)}'">
+                <button class="btn-trailer" id="btn-trailer" onclick="verTrailerProximo(${p.id})">
+                    &#9654; Ver trailer
+                </button>
+            </div>
+            <div class="modal-info">
+                <h2>${p.titulo}</h2>
+                <div class="modal-meta">
+                    ${p.calificacion ? `<span class="rating-grande">&#9733; ${p.calificacion}/10</span>` : ''}
+                    ${p.estreno ? `<span class="clasificacion-badge">Estreno ${formatFecha(p.estreno)}</span>` : ''}
+                    ${p.clasificacion ? `<span class="duracion-modal">${p.clasificacion}</span>` : ''}
+                </div>
+                <div class="generos">
+                    ${p.generos.map(g => `<span class="genero-badge">${g}</span>`).join('')}
+                </div>
+                <p class="modal-descripcion">${p.descripcion || 'Descripción no disponible aún.'}</p>
+                <div class="horarios-section">
+                    <h3>Disponible próximamente en cines</h3>
+                    <div class="cines-links">
+                        ${CINES.map(c => `
+                            <a class="cine-link-btn" href="${urlCine(c.id, p.titulo)}"
+                               target="_blank" rel="noopener">
+                                <span class="cine-link-nombre">${c.nombre}</span>
+                                <span class="cine-link-sub">Buscar cuando esté en cartelera →</span>
+                            </a>`).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>`;
+}
+
+async function verTrailerProximo(id) {
+    const btn = document.getElementById('btn-trailer');
+    if (btn) { btn.textContent = 'Cargando…'; btn.disabled = true; }
+    const apiConfigurada = CONFIG.TMDB_API_KEY && CONFIG.TMDB_API_KEY !== 'TU_API_KEY_AQUI';
+    const url = apiConfigurada ? await cargarTrailer(id) : null;
+    if (!url) {
+        mostrarToast('Trailer no disponible aún para esta película');
+        if (btn) { btn.textContent = '✕ No disponible'; }
+        return;
+    }
+    const wrap = document.getElementById('modal-poster')?.parentElement
+              || document.querySelector('.modal-poster-wrap');
+    if (wrap) wrap.innerHTML = `
+        <iframe class="trailer-frame" src="${url}"
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+}
+
 async function abrirModal(id) {
     // Buscar en caché local primero
     let pelicula = peliculasCache.find(p => p.id === id);
@@ -444,7 +506,7 @@ function renderModal() {
     document.getElementById('modal-body').innerHTML = `
         <div class="modal-pelicula">
             <div class="modal-poster-wrap">
-                <img class="modal-img" id="modal-poster" src="${p.imagen}" alt="${p.titulo}"
+                <img class="modal-img" id="modal-poster" src="${p.imagenGrande}" alt="${p.titulo}"
                      onerror="this.src='https://placehold.co/250x375/111/d4af37?text=${encodeURIComponent(p.titulo)}'">
                 <button class="btn-trailer" id="btn-trailer" onclick="verTrailer(${p.id})">
                     &#9654; Ver trailer

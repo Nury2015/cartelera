@@ -202,16 +202,15 @@ section h1 {
 
 /* === PRÓXIMAMENTE === */
 .carta-pronto {
-    cursor: default;
-}
-
-.carta-pronto:hover {
-    transform: none;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+    cursor: pointer;
 }
 
 .carta-pronto img {
     filter: brightness(0.85);
+}
+
+.carta-pronto:hover img {
+    filter: brightness(1);
 }
 
 .estreno-badge {

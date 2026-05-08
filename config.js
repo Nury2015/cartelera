@@ -6,9 +6,10 @@
 const CONFIG = {
     TMDB_API_KEY: '8bf8dfb691ef5f7ca4e77d65c299c82a',
     TMDB_BASE:    'https://api.themoviedb.org/3',
-    IMG_BASE:     'https://image.tmdb.org/t/p/w500',
-    LANG:         'es-CO',
-    REGION:       'CO',
+    IMG_BASE:      'https://image.tmdb.org/t/p/w500',  // modal
+    IMG_CARD:      'https://image.tmdb.org/t/p/w342',  // cards — más rápido
+    LANG:          'es-CO',
+    REGION:        'CO',
     MAX_CARTELERA:    12,
-    MAX_PROXIMAMENTE: 60,   // hasta 3 páginas de TMDB (~60 estrenos del año)
+    MAX_PROXIMAMENTE: 160,  // 8 páginas → cubre todo el año
 };

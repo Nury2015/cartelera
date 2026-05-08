@@ -7,6 +7,7 @@ let fechaSeleccionada = 0;
 let peliculasCache   = [];   // cartelera
 let proximasCache    = [];   // próximamente
 let tendenciasCache  = [];   // trending semanal
+let cineActivo       = 0;    // índice en CINES[]
 
 // Mapa de género IDs de TMDB → español
 const GENEROS_TMDB = {
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const apiConfigurada = CONFIG.TMDB_API_KEY && CONFIG.TMDB_API_KEY !== 'TU_API_KEY_AQUI';
 
     document.getElementById('anio-footer').textContent = new Date().getFullYear();
+    renderSelectorCine();
 
     if (apiConfigurada) {
         mostrarLoading('tendencias-container', true);
@@ -224,6 +226,7 @@ function tarjetaPelicula(p, clickable) {
                     <span class="rating">&#9733; ${p.calificacion || '—'}</span>
                     ${p.duracion ? `<span class="duracion">${p.duracion}</span>` : ''}
                 </div>
+                ${p.descripcion ? `<p class="carta-desc">${p.descripcion.slice(0, 90)}…</p>` : ''}
             </div>
         </div>`;
 }
@@ -247,10 +250,49 @@ function tarjetaProximamente(p) {
 }
 
 // ============================================================
-//  Render — Comida
+//  Render — Selector de cine + precios + comida
 // ============================================================
+function renderSelectorCine() {
+    const tabs = document.getElementById('cine-tabs');
+    tabs.innerHTML = CINES.map((c, i) => `
+        <button class="cine-tab ${i === cineActivo ? 'activo' : ''}" onclick="seleccionarCine(${i})">
+            ${c.nombre}
+        </button>`).join('');
+    renderPrecios();
+    renderMenu();
+}
+
+function seleccionarCine(index) {
+    cineActivo = index;
+    document.querySelectorAll('.cine-tab').forEach((b, i) =>
+        b.classList.toggle('activo', i === index));
+    renderPrecios();
+    renderMenu();
+}
+
+function renderPrecios() {
+    const cine = CINES[cineActivo];
+    document.getElementById('precios-boletas').innerHTML = `
+        <div class="precios-wrap">
+            <div class="boletas-grid">
+                <h3 class="precios-titulo">Boletas</h3>
+                ${cine.boletas.map(b => `
+                    <div class="boleta-item">
+                        <span class="boleta-tipo">${b.tipo}</span>
+                        <span class="boleta-precio">${b.precio}</span>
+                    </div>`).join('')}
+            </div>
+            <div class="promos-box">
+                <h3 class="precios-titulo">Promociones</h3>
+                ${cine.promos.map(p => `<p class="promo-item">&#10003; ${p}</p>`).join('')}
+                <p class="precios-nota">* Precios aproximados. Pueden variar según ciudad y función.</p>
+            </div>
+        </div>`;
+}
+
 function renderMenu() {
-    document.getElementById('menu-container').innerHTML = MENU_COMIDA.map(cat => `
+    const menu = CINES[cineActivo]?.menu || MENU_COMIDA;
+    document.getElementById('menu-container').innerHTML = menu.map(cat => `
         <div class="menu-categoria">
             <h2 class="menu-cat-titulo">${cat.icono} ${cat.categoria}</h2>
             <div class="menu-items-grid">

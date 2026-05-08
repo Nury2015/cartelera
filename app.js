@@ -24,7 +24,6 @@ const GENEROS_TMDB = {
 document.addEventListener('DOMContentLoaded', async () => {
     setupModal();
     setupNavScroll();
-    renderMenu();
 
     const apiConfigurada = CONFIG.TMDB_API_KEY && CONFIG.TMDB_API_KEY !== 'TU_API_KEY_AQUI';
 

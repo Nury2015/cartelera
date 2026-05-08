@@ -292,20 +292,115 @@ function renderPrecios() {
 
 function renderMenu() {
     const menu = CINES[cineActivo]?.menu || MENU_COMIDA;
-    document.getElementById('menu-container').innerHTML = menu.map(cat => `
-        <div class="menu-categoria">
-            <h2 class="menu-cat-titulo">${cat.icono} ${cat.categoria}</h2>
-            <div class="menu-items-grid">
+    const combos    = menu.find(c => c.categoria === 'Combos');
+    const crispetas = menu.find(c => c.categoria === 'Crispetas');
+    const bebidas   = menu.find(c => c.categoria === 'Bebidas');
+    const snacks    = menu.find(c => c.categoria === 'Snacks');
+
+    document.getElementById('menu-container').innerHTML = `
+        ${renderCombos(combos)}
+        ${renderCrispetas(crispetas)}
+        ${renderBebidas(bebidas)}
+        ${renderSnacks(snacks)}
+    `;
+}
+
+const COMBO_EMOJIS   = ['🍿\n🥤', '🍿🍿\n🥤🥤', '🍿🍿\n🥤🥤\n🌮', '🍿🍿\n🥤🥤\n🌮🌭'];
+const COMBO_COLORES  = ['#2a1500', '#1a1500', '#1a1a00', '#1a0a1a'];
+
+function renderCombos(cat) {
+    if (!cat) return '';
+    return `
+        <div class="menu-bloque">
+            <h2 class="menu-cat-titulo">🍿 Combos</h2>
+            <div class="combos-grid">
+                ${cat.items.map((item, i) => `
+                    <div class="combo-card" style="--c:${COMBO_COLORES[i % 4]}">
+                        <div class="combo-emoji">${COMBO_EMOJIS[i % 4]}</div>
+                        <div class="combo-info">
+                            <h3>${item.nombre}</h3>
+                            <p>${item.descripcion}</p>
+                            <span class="combo-precio">${item.precio}</span>
+                        </div>
+                    </div>`).join('')}
+            </div>
+        </div>`;
+}
+
+const CRISPETA_SIZES = ['sm', 'md', 'lg', 'cr'];
+const CRISPETA_ICONS = ['🍿', '🍿', '🍿', '🍿'];
+
+function renderCrispetas(cat) {
+    if (!cat) return '';
+    return `
+        <div class="menu-bloque">
+            <div class="showcase-banner">
+                <div class="showcase-producto">
+                    <span class="showcase-emoji">🍿</span>
+                    <span class="showcase-label">Crispetas</span>
+                    <span class="showcase-desde">desde ${cat.items[0]?.precio}</span>
+                </div>
+                <div class="showcase-mas">+</div>
+                <div class="showcase-producto">
+                    <span class="showcase-emoji">🥤</span>
+                    <span class="showcase-label">Bebida</span>
+                </div>
+                <div class="showcase-texto">
+                    <strong>La combinación perfecta del cine</strong>
+                </div>
+            </div>
+
+            <h2 class="menu-cat-titulo">🍿 Crispetas</h2>
+            <div class="crispetas-grid">
+                ${cat.items.map((item, i) => `
+                    <div class="crispeta-card ${CRISPETA_SIZES[i]}">
+                        <span class="crispeta-icono">${CRISPETA_ICONS[i]}</span>
+                        <h3>${item.nombre.replace('Crispetas ', '')}</h3>
+                        <p class="crispeta-sub">${item.descripcion}</p>
+                        <span class="crispeta-precio">${item.precio}</span>
+                    </div>`).join('')}
+            </div>
+        </div>`;
+}
+
+function renderBebidas(cat) {
+    if (!cat) return '';
+    return `
+        <div class="menu-bloque">
+            <h2 class="menu-cat-titulo">🥤 Bebidas</h2>
+            <div class="bebidas-grid">
                 ${cat.items.map(item => `
-                    <div class="menu-item">
-                        <div class="menu-item-info">
+                    <div class="bebida-card">
+                        <div class="bebida-icono">${item.nombre.includes('Agua') ? '💧' : '🥤'}</div>
+                        <h3>${item.nombre}</h3>
+                        <p>${item.descripcion}</p>
+                        <span class="bebida-precio">${item.precio}</span>
+                    </div>`).join('')}
+            </div>
+        </div>`;
+}
+
+function renderSnacks(cat) {
+    if (!cat) return '';
+    const SNACK_ICONS = { 'Nachos': '🌮', 'Perro': '🌭', 'Papas': '🍟', 'Churros': '🥐' };
+    return `
+        <div class="menu-bloque">
+            <h2 class="menu-cat-titulo">🌮 Snacks</h2>
+            <div class="snacks-grid">
+                ${cat.items.map(item => {
+                    const icon = Object.entries(SNACK_ICONS).find(([k]) => item.nombre.includes(k))?.[1] || '🍴';
+                    return `
+                    <div class="snack-card">
+                        <span class="snack-icono">${icon}</span>
+                        <div class="snack-info">
                             <h3>${item.nombre}</h3>
                             <p>${item.descripcion}</p>
                         </div>
-                        <span class="menu-item-precio">${item.precio}</span>
-                    </div>`).join('')}
+                        <span class="snack-precio">${item.precio}</span>
+                    </div>`;
+                }).join('')}
             </div>
-        </div>`).join('');
+        </div>`;
 }
 
 // ============================================================

@@ -12,5 +12,5 @@ const CONFIG = {
     REGION:        'CO',
     MAX_CARTELERA:    12,
     MAX_PAGINAS:      12,   // tope de páginas para no saturar la API
-    MIN_POPULARIDAD:  15,   // descarta re-estrenos y lanzamientos obscuros
+    MIN_POPULARIDAD:  5,    // incluye anunciadas con pocos datos aún
 };

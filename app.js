@@ -84,21 +84,28 @@ async function cargarCartelera() {
 }
 
 async function cargarProximamente() {
-    const hoy     = new Date().toISOString().split('T')[0];
-    const finAnio = `${new Date().getFullYear()}-12-31`;
+    const hoy    = new Date().toISOString().split('T')[0];
+    // Incluye este año Y el próximo (diciembre 2026 aparece)
+    const finFecha = `${new Date().getFullYear() + 1}-12-31`;
 
-    // popularity.gte filtra re-estrenos y lanzamientos obscuros
-    const params = `primary_release_date.gte=${hoy}&primary_release_date.lte=${finAnio}`
+    const params = `primary_release_date.gte=${hoy}&primary_release_date.lte=${finFecha}`
                  + `&sort_by=release_date.asc&popularity.gte=${CONFIG.MIN_POPULARIDAD}`;
 
-    // 6 páginas con ese filtro cubre todo el año con solo estrenos reales
-    const pages = await Promise.all(
-        [1,2,3,4,5,6].map(p => tmdbFetch(`/discover/movie?${params}&page=${p}`))
-    );
+    // Página 1 primero para saber cuántas hay en total
+    const primera      = await tmdbFetch(`/discover/movie?${params}&page=1`);
+    const totalPaginas = Math.min(primera.total_pages, CONFIG.MAX_PAGINAS);
 
-    const todos  = pages.flatMap(p => p.results);
+    // Fetch del resto en paralelo
+    const restantes = totalPaginas > 1
+        ? await Promise.all(
+            Array.from({ length: totalPaginas - 1 }, (_, i) =>
+                tmdbFetch(`/discover/movie?${params}&page=${i + 2}`)
+            ))
+        : [];
+
+    const todos  = [primera, ...restantes].flatMap(p => p.results);
     const unicos = [...new Map(todos.map(m => [m.id, m])).values()];
-    proximasCache = unicos.slice(0, CONFIG.MAX_PROXIMAMENTE).map(normalizarPelicula);
+    proximasCache = unicos.map(normalizarPelicula);
 
     const h1 = document.querySelector('#pronto h1');
     if (h1) h1.textContent = `ESTRENOS ${new Date().getFullYear()}`;

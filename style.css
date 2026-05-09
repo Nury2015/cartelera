@@ -379,6 +379,15 @@ section h1 {
 
 .comparativa-tabla tr:last-child td { border-bottom: none; }
 
+.comparativa-comida {
+    margin-top: 20px;
+}
+
+td.precio-min {
+    color: #4caf50;
+    font-weight: bold;
+}
+
 .precios-nota {
     color: #333;
     font-size: 0.72rem;

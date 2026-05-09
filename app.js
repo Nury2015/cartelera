@@ -91,9 +91,9 @@ async function cargarProximamente() {
     const params = `primary_release_date.gte=${hoy}&primary_release_date.lte=${finAnio}`
                  + `&sort_by=release_date.asc&popularity.gte=2`;
 
-    // 8 páginas = hasta 160 películas, cubre nov/dic
+    // 4 páginas = ~80 películas, luego top 10 por mes
     const pages = await Promise.all(
-        [1,2,3,4,5,6,7,8].map(p => tmdbFetch(`/discover/movie?${params}&page=${p}`))
+        [1,2,3,4].map(p => tmdbFetch(`/discover/movie?${params}&page=${p}`))
     );
 
     const todos  = pages.flatMap(p => p.results);
@@ -144,7 +144,8 @@ function normalizarPelicula(m) {
         estreno:       m.release_date || '',
         descripcion:   m.overview || '',
         salas:         generarHorarios(m.id),
-        calificacion:  Math.round(m.vote_average * 10) / 10
+        calificacion:  Math.round(m.vote_average * 10) / 10,
+        popularidad:   m.popularity || 0
     };
 }
 
@@ -215,6 +216,11 @@ function agruparPorMes(peliculas) {
         const clave = `${y}-${m}`;
         if (!g[clave]) g[clave] = [];
         g[clave].push(p);
+    });
+    // Top 10 por popularidad en cada mes
+    Object.keys(g).forEach(k => {
+        g[k].sort((a, b) => b.popularidad - a.popularidad);
+        g[k] = g[k].slice(0, 10);
     });
     return g;
 }
@@ -336,6 +342,20 @@ function renderPrecios() {
         return `<tr><td class="tipo-label">${tipo}</td>${celdas}</tr>`;
     }).join('');
 
+    // Comparativa de comida: mínimo por fila
+    const minimoComida = COMIDA_ITEMS.map((_, i) =>
+        Math.min(...CINES.map(c => c.comida[i]))
+    );
+
+    const comidaFilas = COMIDA_ITEMS.map((item, i) => {
+        const celdas = CINES.map(c => {
+            const val    = c.comida[i];
+            const minimo = val === minimoComida[i];
+            return `<td class="${minimo ? 'precio-min' : ''}">${fmt(val)}</td>`;
+        }).join('');
+        return `<tr><td class="tipo-label">${item}</td>${celdas}</tr>`;
+    }).join('');
+
     document.getElementById('precios-boletas').innerHTML = `
         <div class="precios-layout">
 
@@ -366,9 +386,9 @@ function renderPrecios() {
                 </div>
             </div>
 
-            <!-- Tabla comparativa -->
+            <!-- Tabla comparativa boletas -->
             <div class="comparativa-wrap">
-                <h3 class="comparativa-titulo">Comparativa rápida</h3>
+                <h3 class="comparativa-titulo">Comparativa de boletas</h3>
                 <table class="comparativa-tabla">
                     <thead>
                         <tr>
@@ -378,9 +398,24 @@ function renderPrecios() {
                     </thead>
                     <tbody>${comparativaHTML}</tbody>
                 </table>
-                <p class="precios-nota">* Precios aproximados. Pueden variar según ciudad, sala y función.</p>
             </div>
 
+        </div>
+
+        <!-- Comparativa comida -->
+        <div class="comparativa-wrap comparativa-comida">
+            <h3 class="comparativa-titulo">Comparativa de comida 🍿</h3>
+            <p class="precios-nota" style="margin:0 0 12px">El precio más bajo de cada fila está marcado en verde.</p>
+            <table class="comparativa-tabla">
+                <thead>
+                    <tr>
+                        <th></th>
+                        ${CINES.map(c => `<th>${c.nombre}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>${comidaFilas}</tbody>
+            </table>
+            <p class="precios-nota">* Precios aproximados. Pueden variar según ciudad y sede.</p>
         </div>`;
 }
 

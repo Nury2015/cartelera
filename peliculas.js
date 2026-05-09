@@ -160,6 +160,17 @@ const PROXIMAMENTE = [
   }
 ];
 
+// Ítems de comida para comparativa (nombre + valor por cine en el mismo orden)
+const COMIDA_ITEMS = [
+  'Crispetas medianas',
+  'Crispetas grandes',
+  'Gaseosa mediana',
+  'Gaseosa grande',
+  'Nachos con queso',
+  'Combo solo',
+  'Combo pareja',
+];
+
 const CINES = [
   {
     id: 'cine-colombia',
@@ -177,7 +188,8 @@ const CINES = [
       { dia: 'MIÉ', texto: '50 % de descuento en boletería estándar' },
       { dia: 'MAR', texto: '2×1 en funciones seleccionadas con Bancolombia' },
       { dia: 'TODO', texto: 'Niños menores de 3 años entran gratis' }
-    ]
+    ],
+    comida: [13900, 18900, 10400, 13400, 16900, 22900, 39900]
   },
   {
     id: 'cinemark',
@@ -194,7 +206,8 @@ const CINES = [
       { dia: 'MAR', texto: '$10.000 la boleta en salas 2D' },
       { dia: 'MIÉ', texto: '2×1 en todas las funciones' },
       { dia: 'TODO', texto: 'Cumpleañeros: boleta gratis en tu mes' }
-    ]
+    ],
+    comida: [12400, 16900, 9900, 12900, 15400, 20900, 36900]
   },
   {
     id: 'cinepolis',
@@ -212,6 +225,7 @@ const CINES = [
       { dia: 'MAR', texto: '2×1 en salas 2D y 3D' },
       { dia: 'MIÉ', texto: '2×1 en salas 2D y 3D' },
       { dia: 'TODO', texto: '20 % de descuento pagando con la app Klic' }
-    ]
+    ],
+    comida: [14900, 19900, 11400, 15400, 17900, 25900, 44900]
   }
 ];

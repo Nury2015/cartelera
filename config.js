@@ -11,5 +11,5 @@ const CONFIG = {
     LANG:          'es-CO',
     REGION:        'CO',
     MAX_CARTELERA:    12,
-    MAX_PROXIMAMENTE: 160,  // 8 páginas → cubre todo el año
+    MAX_PROXIMAMENTE: 80,   // 4 páginas, top 10 por mes
 };

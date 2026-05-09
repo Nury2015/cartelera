@@ -87,13 +87,13 @@ async function cargarProximamente() {
     const hoy     = new Date().toISOString().split('T')[0];
     const finAnio = `${new Date().getFullYear()}-12-31`;
 
-    // Sin filtro de idioma ni región para incluir Marvel y todo el año
+    // popularity.gte filtra re-estrenos y lanzamientos obscuros
     const params = `primary_release_date.gte=${hoy}&primary_release_date.lte=${finAnio}`
-                 + `&sort_by=release_date.asc&popularity.gte=2`;
+                 + `&sort_by=release_date.asc&popularity.gte=${CONFIG.MIN_POPULARIDAD}`;
 
-    // 4 páginas = ~80 películas, luego top 10 por mes
+    // 6 páginas con ese filtro cubre todo el año con solo estrenos reales
     const pages = await Promise.all(
-        [1,2,3,4].map(p => tmdbFetch(`/discover/movie?${params}&page=${p}`))
+        [1,2,3,4,5,6].map(p => tmdbFetch(`/discover/movie?${params}&page=${p}`))
     );
 
     const todos  = pages.flatMap(p => p.results);

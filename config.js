@@ -11,5 +11,6 @@ const CONFIG = {
     LANG:          'es-CO',
     REGION:        'CO',
     MAX_CARTELERA:    12,
-    MAX_PROXIMAMENTE: 80,   // 4 páginas, top 10 por mes
+    MAX_PROXIMAMENTE: 120,  // 6 páginas con filtro popularity>=15
+    MIN_POPULARIDAD:  15,   // descarta re-estrenos y lanzamientos obscuros
 };

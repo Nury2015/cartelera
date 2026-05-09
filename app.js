@@ -574,7 +574,7 @@ function renderModal() {
                                href="${urlCine(c.id, p.titulo)}"
                                target="_blank" rel="noopener">
                                 <span class="cine-link-nombre">${c.nombre}</span>
-                                <span class="cine-link-sub">Ver horarios y comprar →</span>
+                                <span class="cine-link-sub">Buscar en Google → <small style="opacity:0.6">${['cinecolombia.com','cinemark.com.co','cinepolis.com.co'][CINES.findIndex(x=>x.id===c.id)]}</small></span>
                             </a>`).join('')}
                         <a class="cine-link-btn cine-link-google"
                            href="https://www.google.com/search?q=${encodeURIComponent(p.titulo + ' cine Colombia horarios')}"
@@ -661,13 +661,14 @@ function formatFecha(str) {
 }
 
 function urlCine(cineId, titulo) {
-    const q = encodeURIComponent(titulo);
-    const urls = {
-        'cine-colombia': `https://www.cinecolombia.com/buscar?q=${q}`,
-        'cinemark':      `https://www.cinemark.com.co/peliculas`,
-        'cinepolis':     `https://www.cinepolis.com.co/pelicula/${q.toLowerCase().replace(/%20/g, '-')}`
+    const busqueda = encodeURIComponent(`${titulo} ${cineId === 'cine-colombia' ? 'Cine Colombia' : cineId === 'cinemark' ? 'Cinemark' : 'Cinépolis'} Colombia horarios`);
+    const webs = {
+        'cine-colombia': 'https://www.cinecolombia.com',
+        'cinemark':      'https://www.cinemark.com.co',
+        'cinepolis':     'https://www.cinepolis.com.co'
     };
-    return urls[cineId] || `https://www.google.com/search?q=${q}+horarios+cine+colombia`;
+    // Abre Google con búsqueda específica del cine — más confiable que URLs internas que cambian
+    return `https://www.google.com/search?q=${busqueda}`;
 }
 
 function abrirPolitica() {
